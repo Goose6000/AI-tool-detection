@@ -1,0 +1,16 @@
+# YOLO dataset config. Class order must never change after you start labeling.
+path: dataset
+train: images/train
+val: images/val
+
+names:
+  0: hammer
+  1: screwdriver
+  2: boxcutter
+  3: adjustable_spanner
+  4: pliers
+  5: d_clamp
+  6: hand_saw
+  7: compact_blower
+  8: m18_hammer_drill
+  9: m18_battery_cp2
