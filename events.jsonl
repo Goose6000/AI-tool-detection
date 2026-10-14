@@ -32,3 +32,32 @@
 {"t": "2026-10-14 10:58:48", "event": "TOOL_LEFT_SQUARE", "tool": "screwdriver", "uuid": "7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22"}
 {"t": "2026-10-14 11:15:14", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
 {"t": "2026-10-14 11:15:23", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 16:53:38", "event": "SCAN_STARTED", "scan_id": "291dd93f-7102-4d96-a136-ef91e1d723dc"}
+{"t": "2026-10-14 16:53:38", "event": "TOOL_IN_SQUARE", "tool": "pliers", "uuid": "1a7c5e96-8b3d-4f21-9d06-6e4a3b1c7d55", "scan_id": "291dd93f-7102-4d96-a136-ef91e1d723dc"}
+{"t": "2026-10-14 16:53:40", "event": "TOOL_LEFT_SQUARE", "tool": "pliers", "uuid": "1a7c5e96-8b3d-4f21-9d06-6e4a3b1c7d55", "scan_id": "291dd93f-7102-4d96-a136-ef91e1d723dc"}
+{"t": "2026-10-14 16:53:57", "event": "SCAN_STARTED", "scan_id": "8d1b79e0-6143-4588-94a7-47c88f4dc6b5"}
+{"t": "2026-10-14 16:53:57", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "8d1b79e0-6143-4588-94a7-47c88f4dc6b5"}
+{"t": "2026-10-14 16:53:59", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "8d1b79e0-6143-4588-94a7-47c88f4dc6b5"}
+{"t": "2026-10-14 16:53:59", "event": "SCAN_STARTED", "scan_id": "4287aad1-21d8-4400-8592-63a96325c541"}
+{"t": "2026-10-14 16:53:59", "event": "TOOL_IN_SQUARE", "tool": "pliers", "uuid": "1a7c5e96-8b3d-4f21-9d06-6e4a3b1c7d55", "scan_id": "4287aad1-21d8-4400-8592-63a96325c541"}
+{"t": "2026-10-14 16:55:19", "event": "TOOL_LEFT_SQUARE", "tool": "pliers", "uuid": "1a7c5e96-8b3d-4f21-9d06-6e4a3b1c7d55", "scan_id": "4287aad1-21d8-4400-8592-63a96325c541"}
+{"t": "2026-10-14 16:55:20", "event": "SCAN_STARTED", "scan_id": "dc764539-9b06-4666-b1dc-0b71231af702"}
+{"t": "2026-10-14 16:55:20", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "dc764539-9b06-4666-b1dc-0b71231af702"}
+{"t": "2026-10-14 17:07:29", "event": "SCAN_STARTED", "scan_id": "9871cb97-bd3a-4a18-9879-d19b12c14eed"}
+{"t": "2026-10-14 17:07:29", "event": "TOOL_IN_SQUARE", "tool": "pliers", "uuid": "1a7c5e96-8b3d-4f21-9d06-6e4a3b1c7d55", "scan_id": "9871cb97-bd3a-4a18-9879-d19b12c14eed"}
+{"t": "2026-10-14 17:07:31", "event": "TOOL_LEFT_SQUARE", "tool": "pliers", "uuid": "1a7c5e96-8b3d-4f21-9d06-6e4a3b1c7d55", "scan_id": "9871cb97-bd3a-4a18-9879-d19b12c14eed"}
+{"t": "2026-10-14 17:07:31", "event": "SCAN_STARTED", "scan_id": "0cb721b9-d7ee-4529-b301-076f95c0bf6c"}
+{"t": "2026-10-14 17:07:31", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "0cb721b9-d7ee-4529-b301-076f95c0bf6c"}
+{"t": "2026-10-14 17:07:39", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "0cb721b9-d7ee-4529-b301-076f95c0bf6c"}
+{"t": "2026-10-14 17:07:42", "event": "SCAN_STARTED", "scan_id": "863f3679-cd42-484d-8f48-2a1f875e41b9"}
+{"t": "2026-10-14 17:07:42", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "863f3679-cd42-484d-8f48-2a1f875e41b9"}
+{"t": "2026-10-14 17:07:57", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "863f3679-cd42-484d-8f48-2a1f875e41b9"}
+{"t": "2026-10-14 17:09:58", "event": "SCAN_STARTED", "scan_id": "2769c9f8-fd9b-4820-8e2c-5165a5ffc4cd"}
+{"t": "2026-10-14 17:09:58", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "2769c9f8-fd9b-4820-8e2c-5165a5ffc4cd"}
+{"t": "2026-10-14 19:11:43", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11", "scan_id": "2769c9f8-fd9b-4820-8e2c-5165a5ffc4cd"}
+{"t": "2026-10-14 19:12:34", "event": "SCAN_STARTED", "scan_id": "49a38924-fdee-457c-b17b-b036da9e2d15"}
+{"t": "2026-10-14 19:12:34", "event": "TOOL_IN_SQUARE", "tool": "screwdriver", "uuid": "7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22", "scan_id": "49a38924-fdee-457c-b17b-b036da9e2d15"}
+{"t": "2026-10-14 19:12:43", "event": "TOOL_LEFT_SQUARE", "tool": "screwdriver", "uuid": "7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22", "scan_id": "49a38924-fdee-457c-b17b-b036da9e2d15"}
+{"t": "2026-10-14 19:12:46", "event": "SCAN_STARTED", "scan_id": "1de55ce5-6e75-4344-b8ae-2f270dd45134"}
+{"t": "2026-10-14 19:12:46", "event": "TOOL_IN_SQUARE", "tool": "screwdriver", "uuid": "7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22", "scan_id": "1de55ce5-6e75-4344-b8ae-2f270dd45134"}
+{"t": "2026-10-14 19:12:49", "event": "TOOL_LEFT_SQUARE", "tool": "screwdriver", "uuid": "7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22", "scan_id": "1de55ce5-6e75-4344-b8ae-2f270dd45134"}

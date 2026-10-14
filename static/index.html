@@ -110,7 +110,8 @@ function showTools(stable) {
 
 function connect() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  ws = new WebSocket(`${proto}://${location.host}/ws`);
+  const key = new URLSearchParams(location.search).get('key') || '';
+  ws = new WebSocket(`${proto}://${location.host}/ws?key=${encodeURIComponent(key)}`);
   ws.binaryType = 'arraybuffer';
   ws.onopen = () => { statusEl.textContent = 'Connected'; busy = false; sendFrame(); };
   ws.onmessage = e => {
@@ -126,7 +127,11 @@ function connect() {
     }
     sendFrame();
   };
-  ws.onclose = () => {
+  ws.onclose = e => {
+    if (e.code === 4401) {
+      statusEl.textContent = 'Wrong or missing camera key. Open the link that includes ?key=...';
+      return;
+    }
     statusEl.textContent = 'Disconnected, retrying...';
     lastDets = [];
     setTimeout(connect, 1500);

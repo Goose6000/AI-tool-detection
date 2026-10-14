@@ -8,7 +8,9 @@ The detector also logs which tool was REMOVED or RETURNED.
 There are two ways to run it:
 
 - **Phone camera → cloud VM** (`server.py`): a phone streams its camera to the VM,
-  and the model reports the UUID of each tool inside the detection square.
+  and the model reports the UUID of each tool inside the detection square. The server
+  also keeps the station state that the ToolLighthouse website
+  ([kite-toolhouse-tracking-](https://github.com/SEVR22/kite-toolhouse-tracking-)) reads.
 - **Local webcam** (`detect.py`): a camera plugged into the same machine, with an OpenCV window.
 
 Current model: `runs/detect/tools-4/weights/best.pt` (yolo11s, 80 epochs, mAP50 0.925).
@@ -30,16 +32,33 @@ sudo dnf install -y https://github.com/cloudflare/cloudflared/releases/latest/do
 
 The VM has no screen, so it needs the headless OpenCV build. The normal build fails with `libGL.so.1` missing.
 
+### Secrets
+
+Create `.env` (git-ignored) once:
+
+```bash
+printf "STATION_TOKEN=%s\nCAMERA_KEY=%s\n" \
+  "$(python3 -c 'import secrets;print(secrets.token_urlsafe(24))')" \
+  "$(python3 -c 'import secrets;print(secrets.token_urlsafe(12))')" > .env
+```
+
+- `CAMERA_KEY`: the phone page only streams when its URL ends in `?key=<CAMERA_KEY>`.
+- `STATION_TOKEN`: the website must send it as `Authorization: Bearer <STATION_TOKEN>`.
+  It goes in the website's `STATION_BACKEND_TOKEN`.
+
+If either is empty, that check is off.
+
 ### Start
 
 ```bash
+set -a; . ./.env; set +a
 .venv/bin/python server.py --weights runs/detect/tools-4/weights/best.pt
 cloudflared tunnel --url http://localhost:8000
 ```
 
-`cloudflared` prints an `https://....trycloudflare.com` URL. Open it on the phone and tap
-**Start camera**. Put a tool inside the white square. Once the tool is detected steadily,
-the page shows its name and UUID.
+`cloudflared` prints an `https://....trycloudflare.com` URL. Open `<that URL>/?key=<CAMERA_KEY>`
+on the phone and tap **Start camera**. Put a tool inside the white square. Once the tool is
+detected steadily, the page shows its name and UUID.
 
 - The URL changes every time the tunnel restarts. It is public and has no login.
 - Both processes stop when the VM reboots or the shell that started them closes.
@@ -58,27 +77,72 @@ pkill -f "cloudflared tunnel"
 2. The server runs the model on the square and replies with the boxes, which the phone draws.
    The phone sends the next frame only after the reply arrives, so no backlog builds up.
    Expect 3–4 fps on the 2-CPU VM. Use `--imgsz 480` for about twice the speed.
-3. A tool counts as in the square once it is seen in 4 of the last 6 frames.
+3. A tool counts as in the square once it has been detected for 2 seconds in a row.
+   Shorter detections never reach the website, which filters out brief false positives.
+   Single missed frames do not break the run (a tool only drops out after missing 3 of 6 frames).
 
-### Tool UUIDs
+### Tool IDs
 
-`tools.yaml` maps each class to a fixed UUID. The website should identify tools by these
-UUIDs, not by their names. Replace them with the website's own IDs if it already has some.
-The server refuses to start if any class has no UUID.
+`tools.yaml` has one entry per model class:
 
-### Output
+- `uuid`: a fixed ID for the tool. It is sent to the website as the detection `id`.
+- `website_id`: the website's tool ID (`lib/catalog.ts` in the website repo), which decides the drawer.
+  `null` means the website has no drawer for that tool, so it is never sent. `boxcutter` is `null` for now.
 
-- `GET /api/latest`: the tools currently in the square, for the website to read:
-  `{"t": "2026-10-14T10:02:11", "tools": [{"name": "hammer", "uuid": "3f8a1c52-..."}]}`
-- `events.jsonl`: one line each time a tool enters or leaves the square
-  (`TOOL_IN_SQUARE`, `TOOL_LEFT_SQUARE`, with name and UUID).
+The server refuses to start if any class is missing from `tools.yaml`.
+
+### Station state (what the website reads)
+
+`GET /stations/station-01/state` returns the website's `StationState` JSON:
+
+| mode | when |
+|---|---|
+| `offline` | no frame from the phone for `--camera-timeout` seconds (5) |
+| `idle` | camera running, square empty, no held result |
+| `scanning` | something detected, not yet confirmed for 2 seconds |
+| `held` | a scan result: every tool seen since the square was last empty |
+
+A scan starts when tools appear in the empty square. Tools added while others are still
+there join the same scan. When the square empties, the result stays `held` for `--hold`
+seconds (60), so the drawers stay lit after the student lifts the tools. New tools during
+the hold start a new scan that replaces it.
+
+The server only sends tool IDs. The website maps each tool to its drawer.
+
+### Connect the website
+
+Run the website with these server-side variables in its `.env.local`:
+
+```bash
+STATION_DATA_SOURCE=remote
+STATION_BACKEND_URL=http://127.0.0.1:8000   # same VM; otherwise this server's https URL
+STATION_BACKEND_TOKEN=<STATION_TOKEN from .env>
+```
+
+The QR code at the station points at the website's `/station/station-01` page, not at
+this server. To make one:
+
+```bash
+.venv/bin/pip install "qrcode[pil]"
+.venv/bin/python -c "import qrcode; qrcode.make('https://<website>/station/station-01', box_size=12).save('station-qr.png')"
+```
+
+A printed QR code needs a URL that never changes, so do not use a `trycloudflare.com` link for it.
+
+### Log
+
+`events.jsonl` gets one line for each `SCAN_STARTED`, `TOOL_IN_SQUARE` and `TOOL_LEFT_SQUARE`
+(with the tool name, UUID and scan ID).
 
 ### Options
 
 - `--conf 0.5`: detection confidence threshold.
-- `--window 6 --need 4`: frames a tool must be seen in before it counts.
+- `--confirm 2`: seconds a tool must stay detected before the website shows it.
+- `--window 6 --need 4`: smooths out single missed frames (a tool must be seen in 4 of the last 6).
+- `--hold 60`: seconds a result stays shown after the square empties.
+- `--camera-timeout 5`: seconds without frames before the station reports the camera offline.
 - `--imgsz 640`: model input size.
-- `--host 127.0.0.1 --port 8000`: where the server listens. The tunnel connects to it locally.
+- `--host 127.0.0.1 --port 8000`: where the server listens. The tunnel and the website connect to it locally.
 - To change the size of the square, edit `SQUARE = 0.8` at the top of `static/index.html`.
   It is a fraction of the camera image's shorter side.
 
