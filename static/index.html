@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tool camera</title>
+<style>
+  :root { --bg: #111; --fg: #eee; --muted: #999; --accent: #2ecc71; --warn: #f39c12; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px system-ui, sans-serif; }
+  #stage { position: relative; width: 100%; }
+  video { display: block; width: 100%; height: auto; }
+  #overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #panel { padding: 12px 16px; }
+  #start { width: 100%; padding: 14px; font-size: 18px; border: 0; border-radius: 8px;
+           background: var(--accent); color: #000; font-weight: 600; }
+  #status { color: var(--muted); font-size: 14px; margin: 8px 0; }
+  .tool { padding: 10px 12px; margin: 6px 0; border-radius: 8px; background: #1e2a22;
+          border-left: 4px solid var(--accent); }
+  .tool b { display: block; }
+  .tool code { font-size: 12px; color: var(--muted); word-break: break-all; }
+  #empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <video id="video" playsinline muted autoplay></video>
+  <canvas id="overlay"></canvas>
+</div>
+<div id="panel">
+  <button id="start">Start camera</button>
+  <div id="status">Not connected</div>
+  <div id="tools"><div id="empty">No tool in the square</div></div>
+</div>
+<script>
+// Side of the detection square, as a fraction of the shorter side of the camera image.
+const SQUARE = 0.8;
+// Size of the JPEG sent to the server (the model runs at 640).
+const SEND_SIZE = 640;
+
+const video = document.getElementById('video');
+const overlay = document.getElementById('overlay');
+const octx = overlay.getContext('2d');
+const grab = document.createElement('canvas');
+grab.width = grab.height = SEND_SIZE;
+const gctx = grab.getContext('2d');
+const statusEl = document.getElementById('status');
+const toolsEl = document.getElementById('tools');
+
+let ws, busy = false, lastDets = [], frames = 0, fpsT = performance.now(), fps = 0;
+
+// The square in the video's native pixels.
+function squareRect(w, h) {
+  const s = Math.min(w, h) * SQUARE;
+  return { x: (w - s) / 2, y: (h - s) / 2, s };
+}
+
+function draw() {
+  const r = overlay.getBoundingClientRect();
+  if (overlay.width !== r.width * devicePixelRatio) {
+    overlay.width = r.width * devicePixelRatio;
+    overlay.height = r.height * devicePixelRatio;
+  }
+  const W = overlay.width, H = overlay.height;
+  octx.clearRect(0, 0, W, H);
+  if (!video.videoWidth) return requestAnimationFrame(draw);
+  const sq = squareRect(W, H);
+  // Dim everything outside the square.
+  octx.fillStyle = 'rgba(0,0,0,0.45)';
+  octx.fillRect(0, 0, W, sq.y);
+  octx.fillRect(0, sq.y + sq.s, W, H - sq.y - sq.s);
+  octx.fillRect(0, sq.y, sq.x, sq.s);
+  octx.fillRect(sq.x + sq.s, sq.y, W - sq.x - sq.s, sq.s);
+  octx.lineWidth = 3 * devicePixelRatio;
+  octx.strokeStyle = '#fff';
+  octx.strokeRect(sq.x, sq.y, sq.s, sq.s);
+  // Boxes come back as 0..1 inside the square.
+  octx.font = `${14 * devicePixelRatio}px system-ui`;
+  for (const d of lastDets) {
+    const [x1, y1, x2, y2] = d.box;
+    const x = sq.x + x1 * sq.s, y = sq.y + y1 * sq.s;
+    octx.strokeStyle = '#2ecc71';
+    octx.strokeRect(x, y, (x2 - x1) * sq.s, (y2 - y1) * sq.s);
+    const label = `${d.name} ${(d.conf * 100).toFixed(0)}%`;
+    octx.fillStyle = '#2ecc71';
+    octx.fillRect(x, y - 20 * devicePixelRatio, octx.measureText(label).width + 8, 20 * devicePixelRatio);
+    octx.fillStyle = '#000';
+    octx.fillText(label, x + 4, y - 5 * devicePixelRatio);
+  }
+  requestAnimationFrame(draw);
+}
+
+// Send one frame, wait for the answer, then send the next. No backlog builds up.
+function sendFrame() {
+  if (!ws || ws.readyState !== WebSocket.OPEN || busy || !video.videoWidth) return;
+  const sq = squareRect(video.videoWidth, video.videoHeight);
+  gctx.drawImage(video, sq.x, sq.y, sq.s, sq.s, 0, 0, SEND_SIZE, SEND_SIZE);
+  busy = true;
+  grab.toBlob(b => b ? ws.send(b) : (busy = false), 'image/jpeg', 0.8);
+}
+
+function showTools(stable) {
+  if (!stable.length) {
+    toolsEl.innerHTML = '<div id="empty">No tool in the square</div>';
+    return;
+  }
+  toolsEl.innerHTML = stable.map(t =>
+    `<div class="tool"><b>${t.name}</b><code>${t.uuid}</code></div>`).join('');
+}
+
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws.binaryType = 'arraybuffer';
+  ws.onopen = () => { statusEl.textContent = 'Connected'; busy = false; sendFrame(); };
+  ws.onmessage = e => {
+    const msg = JSON.parse(e.data);
+    busy = false;
+    if (!msg.error) {
+      lastDets = msg.detections;
+      showTools(msg.stable);
+      frames++;
+      const now = performance.now();
+      if (now - fpsT > 1000) { fps = frames * 1000 / (now - fpsT); frames = 0; fpsT = now; }
+      statusEl.textContent = `Connected · ${fps.toFixed(1)} fps · model ${msg.ms} ms`;
+    }
+    sendFrame();
+  };
+  ws.onclose = () => {
+    statusEl.textContent = 'Disconnected, retrying...';
+    lastDets = [];
+    setTimeout(connect, 1500);
+  };
+}
+
+document.getElementById('start').onclick = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+    });
+    video.srcObject = stream;
+    await video.play();
+    document.getElementById('start').style.display = 'none';
+    requestAnimationFrame(draw);
+    connect();
+  } catch (err) {
+    statusEl.textContent = 'Camera error: ' + err.message +
+      (location.protocol !== 'https:' ? ' (the page must be opened over https)' : '');
+  }
+};
+</script>
+</body>
+</html>

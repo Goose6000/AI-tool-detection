@@ -22,3 +22,13 @@
 {"t": "2026-10-12 16:39:11", "event": "REMOVED", "tool": "hammer", "missing": ["adjustable_spanner", "boxcutter", "compact_blower", "d_clamp", "hammer", "hand_saw", "m18_battery_cp2", "m18_hammer_drill", "pliers", "screwdriver"]}
 {"t": "2026-10-12 16:39:20", "event": "RETURNED", "tool": "hammer", "missing": ["adjustable_spanner", "boxcutter", "compact_blower", "d_clamp", "hand_saw", "m18_battery_cp2", "m18_hammer_drill", "pliers", "screwdriver"]}
 {"t": "2026-10-12 16:39:26", "event": "REMOVED", "tool": "hammer", "missing": ["adjustable_spanner", "boxcutter", "compact_blower", "d_clamp", "hammer", "hand_saw", "m18_battery_cp2", "m18_hammer_drill", "pliers", "screwdriver"]}
+{"t": "2026-10-14 10:57:53", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 10:57:53", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 10:58:16", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 10:58:26", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 10:58:33", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 10:58:35", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 10:58:45", "event": "TOOL_IN_SQUARE", "tool": "screwdriver", "uuid": "7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22"}
+{"t": "2026-10-14 10:58:48", "event": "TOOL_LEFT_SQUARE", "tool": "screwdriver", "uuid": "7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22"}
+{"t": "2026-10-14 11:15:14", "event": "TOOL_IN_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}
+{"t": "2026-10-14 11:15:23", "event": "TOOL_LEFT_SQUARE", "tool": "hammer", "uuid": "3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11"}

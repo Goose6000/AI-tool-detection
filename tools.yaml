@@ -1,0 +1,12 @@
+# Stable ID for each tool class. The website should key on these, not on the names.
+# Replace them with the IDs your website/database already uses, if it has any.
+hammer: 3f8a1c52-6d0e-4b7a-9c21-0a5e7d4b9e11
+screwdriver: 7b2e9d40-1f3c-4a86-8e57-2c9d1a6f0b22
+boxcutter: c41d7e83-5a29-4f10-b6c4-8e3f2a9d1c33
+adjustable_spanner: 9e6f3b17-2c84-4d5a-a1e9-5b7c0d2e8f44
+pliers: 1a7c5e96-8b3d-4f21-9d06-6e4a3b1c7d55
+d_clamp: 5d9b2f08-7e16-4c3a-b8f2-1c6d9e0a4b66
+hand_saw: e2c8a471-3d5f-4b9e-8a17-7f0b2c5d6e77
+compact_blower: 6f1d9c34-4a7b-4e82-9c5d-3b8e1f2a0c88
+m18_hammer_drill: b8e4f2a5-9c61-4d37-a0b8-4d2f7e3c1a99
+m18_battery_cp2: 2c5a8d17-6e39-4b04-8f6a-9a1d4c7e2baa
